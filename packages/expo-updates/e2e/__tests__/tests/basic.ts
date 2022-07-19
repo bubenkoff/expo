@@ -21,7 +21,7 @@ if (!repoRoot) {
 }
 
 const projectRoot = process.env.TEST_PROJECT_ROOT ?? path.resolve(repoRoot, '..', 'updates-e2e');
-const updateDistPath = path.join(projectRoot, 'dist');
+const updateDistPath = path.join(process.env.ARTIFACTS_DEST, 'dist-basic');
 
 export default () =>
   describe('Basic e2e', () => {
@@ -33,7 +33,7 @@ export default () =>
     it('starts app, stops, and starts again', async () => {
       jest.setTimeout(300000 * TIMEOUT_BIAS);
       Server.start(SERVER_PORT);
-      await Simulator.installApp();
+      await Simulator.installApp('basic');
       await Simulator.startApp();
       const message = await Server.waitForRequest(10000 * TIMEOUT_BIAS);
       expect(message).toBe('test');
@@ -51,7 +51,7 @@ export default () =>
     it('initial request includes correct update-id headers', async () => {
       jest.setTimeout(300000 * TIMEOUT_BIAS);
       Server.start(SERVER_PORT);
-      await Simulator.installApp();
+      await Simulator.installApp('basic');
       await Simulator.startApp();
       const request = await Server.waitForUpdateRequest(10000 * TIMEOUT_BIAS);
       expect(request.headers['expo-embedded-update-id']).toBeDefined();
@@ -84,7 +84,7 @@ export default () =>
 
       Server.start(SERVER_PORT);
       await Server.serveSignedManifest(manifest, projectRoot);
-      await Simulator.installApp();
+      await Simulator.installApp('basic');
       await Simulator.startApp();
       const firstRequest = await Server.waitForUpdateRequest(10000 * TIMEOUT_BIAS);
       const message = await Server.waitForRequest(10000 * TIMEOUT_BIAS);
@@ -132,7 +132,7 @@ export default () =>
 
       Server.start(SERVER_PORT);
       await Server.serveSignedManifest(manifest, projectRoot);
-      await Simulator.installApp();
+      await Simulator.installApp('basic');
       await Simulator.startApp();
       await Server.waitForUpdateRequest(10000 * TIMEOUT_BIAS);
       const message = await Server.waitForRequest(10000 * TIMEOUT_BIAS);
@@ -192,7 +192,7 @@ export default () =>
 
       Server.start(SERVER_PORT);
       await Server.serveSignedManifest(manifest, projectRoot);
-      await Simulator.installApp();
+      await Simulator.installApp('basic');
       await Simulator.startApp();
       const message = await Server.waitForRequest(10000 * TIMEOUT_BIAS);
       expect(message).toBe('test');
@@ -234,7 +234,7 @@ export default () =>
 
       Server.start(SERVER_PORT);
       await Server.serveSignedManifest(manifest, projectRoot);
-      await Simulator.installApp();
+      await Simulator.installApp('basic');
       await Simulator.startApp();
       await Server.waitForUpdateRequest(10000 * TIMEOUT_BIAS);
       const firstMessage = await Server.waitForRequest(10000 * TIMEOUT_BIAS);
